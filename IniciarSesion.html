@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Tienda Mas</title>
+    <meta name="description" content="Log in to your Tienda Mas account to access your shopping cart, orders, and exclusive offers">
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #FF6B35;
+            --primary-blue: #004E89;
+            --light-gray: #F8F9FA;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .login-container {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+        
+        .btn-login {
+            background-color: var(--primary-orange);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-login:hover {
+            background-color: #E55627; /* Slightly darker orange */
+        }
+        
+        .password-toggle {
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6B7280;
+        }
+        
+        .password-toggle:hover {
+            color: #374151;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .login-container {
+                width: 100%;
+                border-radius: 0;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <main class="login-container bg-white rounded-xl p-8 w-full max-w-md">
+        <!-- Logo and Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+                <span class="text-orange-500">Tienda</span>
+                <span class="text-blue-600 ml-1">Mas</span>
+            </h1>
+            <p class="text-gray-600">¡Bienvenido de nuevo! Iniciá sesión en tu cuentav</p>
+        </header>
+        
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-5" novalidate>
+            <!-- Status message (hidden by default) -->
+            <div id="statusMessage" class="hidden p-3 rounded-lg text-sm"></div>
+            
+            <!-- Email Field -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-gray-700">
+                    Correo electrónico <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required
+                        aria-required="true"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all duration-200 pl-10"
+                        placeholder="tu@email.com"
+                        autocomplete="email"
+                    >
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="far fa-envelope"></i>
+                    </div>
+                </div>
+                <p id="emailError" class="text-red-500 text-xs mt-1 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Por favor ingresá un correo electrónico válido
+                </p>
+            </div>
+            
+            <!-- Password Field -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label for="password" class="block text-sm font-medium text-gray-700">
+                        Contraseña <span class="text-red-500">*</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+                </div>
+                <div class="relative">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required
+                        aria-required="true"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all duration-200 pl-10 pr-10"
+                        placeholder="••••••••"
+                        autocomplete="current-password"
+                    >
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility" onclick="togglePassword('password')">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+                <p id="passwordError" class="text-red-500 text-xs mt-1 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Por favor ingresá tu contraseña
+                </p>
+            </div>
+            
+            <!-- Remember Me Checkbox -->
+            <div class="flex items-center">
+                <input 
+                    id="rememberMe" 
+                    name="rememberMe" 
+                    type="checkbox" 
+                    class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-2 focus:ring-orange-500"
+                >
+                <label for="rememberMe" class="ml-3 text-sm font-medium text-gray-700">
+                    Recordarme
+                </label>
+            </div>
+            
+            <!-- Submit Button -->
+            <button 
+                type="submit" 
+                class="btn-login w-full text-white font-medium py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                aria-label="Log in"
+            >
+                Iniciar sesión
+            </button>
+            
+            <!-- Sign Up Link -->
+            <div class="text-center text-sm text-gray-600">
+                ¿No tenés una cuenta? 
+                <a href="#" class="font-medium text-blue-600 hover:underline">Registrate</a>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        /**
+         * Tienda Mas Login Page JavaScript
+         * Handles form validation and user feedback
+         */
+        
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const toggleIcon = field.parentNode.querySelector('.password-toggle i');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                field.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+        
+        // Validate email format
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Show error message
+        function showError(fieldId, errorId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(errorId);
+            
+            field.classList.add('border-red-500');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+        
+        // Hide error message
+        function hideError(fieldId, errorId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(errorId);
+            
+            field.classList.remove('border-red-500');
+            errorElement.classList.add('hidden');
+        }
+        
+        // Show status message
+        function showStatus(message, isSuccess) {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden');
+            
+            if (isSuccess) {
+                statusMessage.classList.add('bg-green-100', 'text-green-700');
+                statusMessage.classList.remove('bg-red-100', 'text-red-700');
+            } else {
+                statusMessage.classList.add('bg-red-100', 'text-red-700');
+                statusMessage.classList.remove('bg-green-100', 'text-green-700');
+            }
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+        
+        // Form submission handler
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+            
+            // Reset all errors
+            document.querySelectorAll('[id$="Error"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+            
+            // Validate email
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                showError('email', 'emailError', 'Please enter your email address');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showError('email', 'emailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            // Validate password
+            const password = document.getElementById('password').value;
+            if (!password) {
+                showError('password', 'passwordError', 'Please enter your password');
+                isValid = false;
+            }
+            
+            // If form is valid, simulate login
+            if (isValid) {
+                // In a real application, this would be an API call to your backend
+                // For demo purposes, we'll simulate a successful login
+                showStatus('Login successful! Redirecting...', true);
+                
+                // Reset form after successful "login"
+                setTimeout(() => {
+                    loginForm.reset();
+                    // In a real app, you would redirect to the dashboard here
+                    // window.location.href = '/dashboard';
+                }, 2000);
+            } else {
+                showStatus('Please fix the errors in the form', false);
+            }
+        });
+        
+        // Real-time validation for email format
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            
+            if (email && !isValidEmail(email)) {
+                showError('email', 'emailError', 'Please enter a valid email address');
+            } else {
+                hideError('email', 'emailError');
+            }
+        });
+        
+        // Real-time validation for password
+        document.getElementById('password').addEventListener('blur', function() {
+            if (!this.value) {
+                showError('password', 'passwordError', 'Please enter your password');
+            } else {
+                hideError('password', 'passwordError');
+            }
+        });
+    </script>
+</body>
+</html>

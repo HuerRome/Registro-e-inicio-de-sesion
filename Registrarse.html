@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta | Tienda Mas</title>
+    <meta name="description" content="Create an account with Tienda Mas for faster checkout and personalized shopping">
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF6B35; /* Tienda Mas orange */
+            --primary-hover: #E55627;
+            --secondary-color: #004E89; /* Tienda Mas blue */
+            --light-gray: #F8F9FA;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: #333;
+        }
+        
+        .form-container {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-icon {
+            transition: all 0.2s ease;
+        }
+        
+        .input-field:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+        
+        .btn-primary {
+            transition: all 0.2s ease;
+            background-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .password-toggle {
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6B7280;
+        }
+        
+        .password-toggle:hover {
+            color: #374151;
+        }
+        
+        /* Loading spinner for API verification */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <main class="form-container bg-white rounded-xl p-8 w-full max-w-md">
+        <!-- Logo and Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+                <span class="text-orange-500">Tienda</span>
+                <span class="text-blue-600 ml-1">Mas</span>
+            </h1>
+            <p class="text-gray-600">Registrate y empezá a comprar fácil, rápido y seguro</p>
+        </header>
+        
+        <!-- Registration Form -->
+        <form id="registrationForm" class="space-y-5" novalidate>
+            <!-- Full Name -->
+            <div class="space-y-2">
+                <label for="fullName" class="block text-sm font-medium text-gray-700">
+                    Nombre completo <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        name="fullName" 
+                        required
+                        aria-required="true"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all duration-200 pl-10"
+                        placeholder="Ingresa tu nombre completo"
+                        autocomplete="name"
+                    >
+                    <div class="input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="far fa-user"></i>
+                    </div>
+                </div>
+                <p id="nameError" class="text-red-500 text-xs mt-1 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Por favor ingresa tu nombre completo
+                </p>
+            </div>
+            
+            <!-- Email -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-gray-700">
+                    Correo electrónico <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required
+                        aria-required="true"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all duration-200 pl-10"
+                        placeholder="tu@email.com"
+                        autocomplete="email"
+                    >
+                    <div class="input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="far fa-envelope"></i>
+                    </div>
+                </div>
+                <p id="emailError" class="text-red-500 text-xs mt-1 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Por favor ingresa un correo electrónico válido
+                </p>
+                <p id="emailApiError" class="text-red-500 text-xs mt-1 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Este correo electrónico no parece existir
+                </p>
+            </div>
+            
+            <!-- Password -->
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-gray-700">
+                    Contraseña <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required
+                        aria-required="true"
+                        minlength="8"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all duration-200 pl-10 pr-10"
+                        placeholder="••••••••"
+                        autocomplete="new-password"
+                    >
+                    <div class="input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility" onclick="togglePassword('password')">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+                <p id="passwordError" class="text-red-500 text-xs mt-1 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i> La contraseña debe tener al menos 8 caracteres
+                </p>
+                <div class="text-xs text-gray-500 mt-1">
+                    <p><i class="fas fa-info-circle mr-1"></i> Al menos 8 caracteres</p>
+                </div>
+            </div>
+            
+            <!-- Confirm Password -->
+            <div class="space-y-2">
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
+                    Confirmar contraseña <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        required
+                        aria-required="true"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all duration-200 pl-10 pr-10"
+                        placeholder="••••••••"
+                        autocomplete="new-password"
+                    >
+                    <div class="input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility" onclick="togglePassword('confirmPassword')">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+                <p id="confirmPasswordError" class="text-red-500 text-xs mt-1 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Las contraseñas no coinciden
+                </p>
+            </div>
+            
+            <!-- Terms and Conditions -->
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input 
+                        id="terms" 
+                        name="terms" 
+                        type="checkbox" 
+                        required
+                        aria-required="true"
+                        class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-2 focus:ring-orange-500"
+                    >
+                </div>
+                <label for="terms" class="ml-3 text-sm font-medium text-gray-700">
+                    Acepto los <a href="#" class="text-orange-600 hover:underline">Términos y Condiciones</a> y la <a href="#" class="text-orange-600 hover:underline">Política de Privacidad</a>
+                    <span class="text-red-500">*</span>
+                </label>
+            </div>
+            <p id="termsError" class="text-red-500 text-xs mt-1 hidden">
+                <i class="fas fa-exclamation-circle mr-1"></i> Debes aceptar los términos y condiciones
+            </p>
+            
+            <!-- Submit Button -->
+            <button 
+                type="submit" 
+                id="submitBtn"
+                class="btn-primary w-full text-white font-medium py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 flex items-center justify-center"
+                aria-label="Create account"
+            >
+                <span id="btnText">Crear cuenta</span>
+                <div id="spinner" class="spinner ml-2"></div>
+            </button>
+            
+            <!-- Login Link -->
+            <div class="text-center text-sm text-gray-600">
+                ¿Ya tienes una cuenta? - 
+                <a href="#" class="font-medium text-orange-600 hover:underline">Iniciar sesión</a>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // DOM Elements
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+        
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const toggleIcon = field.parentNode.querySelector('.password-toggle i');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                field.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+        
+        // Validate email format
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Verify email existence using Abstract API
+        async function verifyEmail(email) {
+            // IMPORTANT: Replace with your actual API key from AbstractAPI
+            const API_KEY = 'YOUR_ABSTRACT_API_KEY_HERE';
+            const API_URL = `https://emailvalidation.abstractapi.com/v1/?api_key=${API_KEY}&email=${encodeURIComponent(email)}`;
+            
+            
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                // Check if email is deliverable (simplified check)
+                if (data.deliverability === 'DELIVERABLE') {
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Email verification error:', error);
+                // In case of API failure, we'll accept the email but log the error
+                return true;
+            }
+        }
+        
+        // Display error message
+        function showError(fieldId, errorId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(errorId);
+            
+            field.classList.add('border-red-500');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+        
+        // Hide error message
+        function hideError(fieldId, errorId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(errorId);
+            
+            field.classList.remove('border-red-500');
+            errorElement.classList.add('hidden');
+        }
+        
+        // Form submission handler
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            let isValid = true;
+            
+            // Reset all errors
+            document.querySelectorAll('[id$="Error"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+            
+            // Validate full name
+            const fullName = document.getElementById('fullName').value.trim();
+            if (!fullName) {
+                showError('fullName', 'nameError', 'Please enter your full name');
+                isValid = false;
+            }
+            
+            // Validate email
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                showError('email', 'emailError', 'Please enter your email address');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showError('email', 'emailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            // Validate password
+            const password = document.getElementById('password').value;
+            if (password.length < 8) {
+                showError('password', 'passwordError', 'Password must be at least 8 characters');
+                isValid = false;
+            }
+            
+            // Validate confirm password
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                showError('confirmPassword', 'confirmPasswordError', 'Passwords don\'t match');
+                isValid = false;
+            }
+            
+            // Validate terms checkbox
+            const termsChecked = document.getElementById('terms').checked;
+            if (!termsChecked) {
+                document.getElementById('termsError').classList.remove('hidden');
+                isValid = false;
+            }
+            
+            // If basic validation passes, verify email via API
+            if (isValid) {
+                submitBtn.disabled = true;
+                btnText.textContent = 'Verifying email...';
+                spinner.style.display = 'block';
+                
+                try {
+                    const emailValid = await verifyEmail(email);
+                    
+                    if (!emailValid) {
+                        showError('email', 'emailApiError', 'This email address doesn\'t seem to exist');
+                        isValid = false;
+                    }
+                } catch (error) {
+                    console.error('Email verification failed:', error);
+                    // Continue with form submission even if API fails
+                }
+                
+                submitBtn.disabled = false;
+                btnText.textContent = 'Create Account';
+                spinner.style.display = 'none';
+                
+                // If everything is valid, show success message
+                if (isValid) {
+                    alert('Account created successfully! (This is a demo - no data was sent)');
+                    form.reset();
+                }
+            }
+        });
+        
+        // Real-time validation for password match
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (password && confirmPassword && password !== confirmPassword) {
+                showError('confirmPassword', 'confirmPasswordError', 'Passwords don\'t match');
+            } else {
+                hideError('confirmPassword', 'confirmPasswordError');
+            }
+        });
+        
+        // Real-time validation for email format
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            
+            if (email && !isValidEmail(email)) {
+                showError('email', 'emailError', 'Please enter a valid email address');
+            } else {
+                hideError('email', 'emailError');
+                hideError('email', 'emailApiError');
+            }
+        });
+    </script>
+</body>
+</html>
