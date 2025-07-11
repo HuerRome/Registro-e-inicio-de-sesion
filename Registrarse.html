@@ -236,7 +236,7 @@
             <!-- Login Link -->
             <div class="text-center text-sm text-gray-600">
                 ¿Ya tienes una cuenta? - 
-                <a href="#" class="font-medium text-orange-600 hover:underline">Iniciar sesión</a>
+                <a href="iniciarSesion.html" class="font-medium text-orange-600 hover:underline">Iniciar sesión</a>
             </div>
         </form>
     </main>
@@ -363,6 +363,7 @@
                 btnText.textContent = 'Verifying email...';
                 spinner.style.display = 'block';
                 
+                /*
                 try {
                     const emailValid = await verifyEmail(email);
                     
@@ -374,7 +375,8 @@
                     console.error('Email verification failed:', error);
                     // Continue with form submission even if API fails
                 }
-                
+                */
+
                 submitBtn.disabled = false;
                 btnText.textContent = 'Create Account';
                 spinner.style.display = 'none';
